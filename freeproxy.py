@@ -12,6 +12,8 @@ import time
 import urllib.parse
 import urllib.request
 import uuid
+import threading
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -38,6 +40,12 @@ DEFAULT_RANDOM_SEED = 1337
 DEFAULT_SHARD_COUNT = 4
 DEFAULT_TARGET_COUNTRIES = ("ID", "SG", "US")
 DEFAULT_IP_CHECK_URL = "https://ifconfig.co"
+DEFAULT_IP_CHECK_URLS = (
+    "https://ifconfig.co",
+    "https://ifconfig.me",
+    "https://api.ipify.org",
+    "https://icanhazip.com",
+)
 DEFAULT_GROUPS = ("PROXY-FREE", "PROXY-ID", "PROXY-SG", "PROXY-US")
 
 
@@ -398,7 +406,37 @@ def build_temp_config(outbound, listen_port):
     }
 
 
-def live_test(binary_path, candidate, listen_port, live_timeout, ip_check_url):
+def _is_valid_ip(text):
+    """Validate that text is a proper IPv4 address (0-255 per octet, no leading zeros)."""
+    parts = text.split(".")
+    return (
+        len(parts) == 4
+        and all(p.isdigit() and 0 <= int(p) <= 255 for p in parts)
+        and not any(len(p) > 1 and p[0] == "0" for p in parts)
+    )
+
+
+def _wait_for_port(host, port, timeout=5):
+    """Poll until a TCP port accepts connections, or return False."""
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            sock = socket.create_connection((host, port), timeout=0.3)
+            sock.close()
+            return True
+        except (OSError, socket.timeout):
+            time.sleep(0.1)
+    return False
+
+
+def _pick_port():
+    """Get a random available TCP port from the OS."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
+
+
+def live_test(binary_path, candidate, listen_port, live_timeout, ip_check_urls):
     outbound = dict(candidate["outbound"])
     config = build_temp_config(outbound, listen_port)
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
@@ -412,23 +450,28 @@ def live_test(binary_path, candidate, listen_port, live_timeout, ip_check_url):
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        time.sleep(2)
-        result = subprocess.run(
-            [
-                "curl",
-                "-sS",
-                "--proxy",
-                f"http://127.0.0.1:{listen_port}",
-                "--max-time",
-                str(live_timeout),
-                ip_check_url,
-            ],
-            capture_output=True,
-            text=True,
-        )
-        external_ip = result.stdout.strip()
-        if external_ip and re.fullmatch(r"\d{1,3}(?:\.\d{1,3}){3}", external_ip):
-            return external_ip
+        if not _wait_for_port("127.0.0.1", listen_port, timeout=5):
+            return None
+
+        for url in ip_check_urls:
+            result = subprocess.run(
+                [
+                    "curl",
+                    "-sS",
+                    "--proxy",
+                    f"http://127.0.0.1:{listen_port}",
+                    "--max-time",
+                    str(live_timeout),
+                    url,
+                ],
+                capture_output=True,
+                text=True,
+            )
+            external_ip = result.stdout.strip()
+            if external_ip and _is_valid_ip(external_ip):
+                return external_ip
+            if external_ip:
+                print(f"[live] invalid IP '{external_ip}' from {url}, trying next...")
         return None
     except Exception:
         return None
@@ -445,41 +488,173 @@ def live_test(binary_path, candidate, listen_port, live_timeout, ip_check_url):
             pass
 
 
-def geoip_single(ip):
-    try:
-        request = urllib.request.Request(
-            f"http://ip-api.com/json/{ip}?fields=query,country,countryCode,regionName,city,isp"
-        )
-        row = json.loads(urllib.request.urlopen(request, timeout=10).read())
-        return {
-            "country_code": row.get("countryCode", "XX"),
-            "country": row.get("country", "Unknown"),
-            "region": row.get("regionName", ""),
-            "city": row.get("city", ""),
-            "isp": row.get("isp", ""),
-        }
-    except Exception:
-        return {
+class GeoIPProvider:
+    """Single GeoIP provider with per-provider rate limiting."""
+    __slots__ = ('name', 'url_template', 'rate_per_minute', '_lock', '_last_call')
+
+    def __init__(self, name, url_template, rate_per_minute=60):
+        self.name = name
+        self.url_template = url_template
+        self.rate_per_minute = rate_per_minute
+        self._lock = threading.Lock()
+        self._last_call = 0.0
+
+    def wait_if_needed(self):
+        with self._lock:
+            min_interval = 60.0 / max(self.rate_per_minute, 1)
+            now = time.time()
+            elapsed = now - self._last_call
+            if elapsed < min_interval:
+                time.sleep(min_interval - elapsed)
+            self._last_call = time.time()
+
+
+class GeoIPResolver:
+    """Multi-provider GeoIP resolver with fallback chain, per-provider rate limit, and IP cache.
+
+    Providers tried in order until one succeeds:
+      1. ip-api.com     (45 req/min)
+      2. geoip.vuiz.net (100 req/min)
+      3. reallyfreegeoip.org (~unlimited)
+      4. geoapi.info    (60 req/min)
+    """
+
+    PROVIDERS = [
+        GeoIPProvider(
+            "ip-api",
+            "http://ip-api.com/json/{ip}?fields=query,country,countryCode,regionName,city,isp",
+            45,
+        ),
+        GeoIPProvider(
+            "vuiz",
+            "https://geoip.vuiz.net/geoip?ip={ip}&format=json",
+            100,
+        ),
+        GeoIPProvider(
+            "rfgeo",
+            "https://reallyfreegeoip.org/json/{ip}",
+            300,
+        ),
+        GeoIPProvider(
+            "geoapi",
+            "https://geoapi.info/api/geo?ip={ip}",
+            60,
+        ),
+    ]
+
+    def __init__(self):
+        self._cache = {}
+        self._cache_lock = threading.Lock()
+
+    def resolve(self, ip):
+        """Resolve GeoIP for an IP. Returns dict with country_code, country, region, city, isp."""
+        with self._cache_lock:
+            cached = self._cache.get(ip)
+            if cached is not None:
+                return cached
+
+        for provider in self.PROVIDERS:
+            result = self._try_provider(provider, ip)
+            if result:
+                with self._cache_lock:
+                    if ip not in self._cache:
+                        self._cache[ip] = result
+                return result
+
+        fallback = {
             "country_code": "XX",
             "country": "Unknown",
             "region": "",
             "city": "",
             "isp": "",
         }
+        with self._cache_lock:
+            if ip not in self._cache:
+                self._cache[ip] = fallback
+        return fallback
+
+    @staticmethod
+    def _try_provider(provider, ip):
+        provider.wait_if_needed()
+        try:
+            url = provider.url_template.format(ip=ip)
+            req = urllib.request.Request(url, headers={"User-Agent": "curl/8.0"})
+            data = json.loads(urllib.request.urlopen(req, timeout=10).read())
+
+            if provider.name == "ip-api":
+                cc = (data.get("countryCode") or "").strip()
+                if cc:
+                    return {
+                        "country_code": cc,
+                        "country": data.get("country", "") or "",
+                        "region": data.get("regionName", "") or "",
+                        "city": data.get("city", "") or "",
+                        "isp": data.get("isp", "") or "",
+                    }
+
+            elif provider.name == "vuiz":
+                cc = (data.get("country_code") or "").strip()
+                if cc:
+                    return {
+                        "country_code": cc,
+                        "country": data.get("country", "") or "",
+                        "region": data.get("region", "") or "",
+                        "city": data.get("city", "") or "",
+                        "isp": data.get("isp", "") or "",
+                    }
+
+            elif provider.name == "rfgeo":
+                cc = (data.get("country_code") or "").strip()
+                if cc:
+                    return {
+                        "country_code": cc,
+                        "country": data.get("country_name", "") or "",
+                        "region": data.get("region_name", "") or "",
+                        "city": data.get("city", "") or "",
+                        "isp": "",
+                    }
+
+            elif provider.name == "geoapi":
+                loc = data.get("location") or {}
+                cc = (loc.get("country") or "").strip()
+                if cc:
+                    return {
+                        "country_code": cc,
+                        "country": loc.get("countryName", "") or "",
+                        "region": loc.get("region", "") or "",
+                        "city": loc.get("city", "") or "",
+                        "isp": "",
+                    }
+
+            return None
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                print(f"[geoip] {provider.name} rate limited, trying next...")
+            return None
+        except Exception:
+            return None
 
 
-def run_live_filter(binary_path, candidates, live_workers, live_timeout, ip_check_url):
+_GEO_RESOLVER = GeoIPResolver()
+
+
+def geoip_single(ip):
+    """Resolve GeoIP for a single IP using the multi-provider resolver."""
+    return _GEO_RESOLVER.resolve(ip)
+
+
+def run_live_filter(binary_path, candidates, live_workers, live_timeout, ip_check_urls):
     live_records = []
     with ThreadPoolExecutor(max_workers=live_workers) as executor:
         future_map = {}
-        for index, candidate in enumerate(candidates, start=1):
+        for candidate in candidates:
             future = executor.submit(
                 live_test,
                 binary_path,
                 candidate,
-                19000 + index,
+                _pick_port(),
                 live_timeout,
-                ip_check_url,
+                ip_check_urls,
             )
             future_map[future] = candidate
 
@@ -606,12 +781,15 @@ def scan(args):
     tcp_pass = run_tcp_filter(shard_items, args.tcp_timeout, args.tcp_workers)
     print(f"[scan] tcp ok: {len(tcp_pass)}")
 
+    ip_check_urls = [args.ip_check_url] + [
+        u for u in DEFAULT_IP_CHECK_URLS if u != args.ip_check_url
+    ]
     live_candidates = run_live_filter(
         binary_path=binary_path,
         candidates=tcp_pass,
         live_workers=args.live_workers,
         live_timeout=args.live_timeout,
-        ip_check_url=args.ip_check_url,
+        ip_check_urls=ip_check_urls,
     )
 
     records = [build_proxy_record(index, candidate) for index, candidate in enumerate(live_candidates, start=1)]
