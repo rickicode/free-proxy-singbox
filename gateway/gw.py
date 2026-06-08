@@ -62,7 +62,8 @@ def load_net_config():
     Returns dict dengan default fallback jika file tidak ada."""
     defaults = {
         "wan_if": "eth0",
-        "lan_if": "eth1",
+        "wan2_if": "eth1",
+        "lan_if": "eth2",
         "lan_subnet": "192.168.92.0/24",
         "lan_ip": "192.168.92.1/24",
         "tproxy_port": 7893,
@@ -117,7 +118,7 @@ def detect_network():
         print(f"  LAN candidate(s): {', '.join(lan_candidates)}")
         default_lan = lan_candidates[0]
     else:
-        default_lan = "eth1"
+        default_lan = "eth2"
         print(f"  No LAN interface detected with private IP.")
     net["lan_if"] = ask(f"LAN interface", default_lan)
 

@@ -1,10 +1,10 @@
 #!/bin/bash
-# TProxy: traffic dari LAN eth1 → sing-box :7893
+# TProxy: traffic dari LAN eth2 → sing-box :7893
 # Dipanggil oleh systemd sing-box.service (ExecStartPost / ExecStopPost)
 
 TPROXY_PORT=7893
 TPROXY_MARK=0x01
-LAN_IF=eth1
+LAN_IF=eth2
 
 flush() {
     iptables -t mangle -D PREROUTING -i $LAN_IF -j SING_BOX 2>/dev/null

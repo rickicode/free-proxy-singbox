@@ -6,7 +6,7 @@
 
 ## Arsitektur
 - VPS sebagai **internet gateway** untuk LAN `192.168.92.0/24`
-- Interface: `eth0` (WAN, 192.168.90.78), `eth1` (LAN, 192.168.92.1)
+- Interface: `eth0` (WAN1, 192.168.90.78), `eth1` (WAN2 DHCP), `eth2` (LAN, 192.168.92.1)
 - Traffic LAN → **TProxy** (port 7893) → sing-box → outbound
 - NAT MASQUERADE aktif: `192.168.92.0/24 → eth0`
 - IP Forwarding: ON (`/etc/sysctl.d/99-gateway.conf`)
