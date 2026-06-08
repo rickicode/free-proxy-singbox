@@ -404,9 +404,46 @@ def cmd_mode(args=None):
     ok(f"GLOBAL default → {mode}")
 
 def cmd_update_proxies():
-    updater = "/opt/trojan-updater.py"
+    updater = "/opt/proxy-collector.py"
     if os.path.exists(updater): run(["python3",updater])
-    else: err("trojan-updater.py not found")
+    else: err("proxy-collector.py not found")
+
+COLLECTOR_STATE_FILE = "/opt/.proxy-collector-state.json"
+GITHUB_SUMMARY = "https://raw.githubusercontent.com/rickicode/free-proxy-singbox/main/output/latest-summary.json"
+
+
+def cmd_collector_status():
+    """Show collector freshness status."""
+    print(f"\n  {bold('Collector Status')}")
+
+    # Local state
+    local = {}
+    if os.path.exists(COLLECTOR_STATE_FILE):
+        with open(COLLECTOR_STATE_FILE) as f:
+            local = json.load(f)
+
+    last_run = local.get("last_run_at", "never")
+    last_gen = local.get("last_generated_at", "-")
+
+    print(f"  Last run    : {last_run}")
+    print(f"  Last scan   : {last_gen}")
+
+    # Remote check
+    try:
+        req = urllib.request.Request(GITHUB_SUMMARY, headers={"User-Agent": "curl/8.0"})
+        remote = json.loads(urllib.request.urlopen(req, timeout=10).read())
+        remote_gen = remote.get("generated_at", "")
+        r_candidates = remote.get("candidate_count", "?")
+        r_live = remote.get("live_count", "?")
+        print(f"  Remote scan : {remote_gen}")
+        print(f"  Remote data : {r_candidates} candidates, {r_live} live proxies")
+
+        if last_gen == remote_gen:
+            print(f"  \033[32m✓\033[0m Fresh — collector sudah pakai data terbaru\n")
+        else:
+            print(f"  \033[33m!\033[0m Stale — GitHub punya data baru, jalankan `gw update-proxies`\n")
+    except Exception as e:
+        print(f"  \033[31m✗\033[0m Cannot reach GitHub: {e}\n")
 
 # ── Interactive menu ──────────────────────────────────────────────────────────
 def interactive():
@@ -417,10 +454,11 @@ def interactive():
   2) Start / Stop / Restart
   3) Rule management
   4) Mode (GLOBAL default)
-  5) Update proxies (PROXY-BARRYFAR)
-  6) Compile local rules
-  7) Live logs
-  8) Install / reinstall
+  5) Update proxies (free proxies)
+  6) Collector status
+  7) Compile local rules
+  8) Live logs
+  9) Install / reinstall
   0) Exit
 """)
         choice = ask("Choose","0").strip()
@@ -453,10 +491,12 @@ def interactive():
         elif choice=="5":
             cmd_update_proxies()
         elif choice=="6":
-            cmd_compile()
+            cmd_collector_status()
         elif choice=="7":
-            cmd_logs()
+            cmd_compile()
         elif choice=="8":
+            cmd_logs()
+        elif choice=="9":
             if ask("Reinstall? (yes/no)","no")=="yes": cmd_install()
         elif choice=="0":
             break
@@ -468,6 +508,7 @@ CMDS = {
     "enable":cmd_enable,"disable":cmd_disable,"logs":cmd_logs,
     "rule":cmd_rule,"mode":cmd_mode,
     "compile":cmd_compile,"update-proxies":cmd_update_proxies,
+    "collector-status":cmd_collector_status,
 }
 
 if __name__=="__main__":
