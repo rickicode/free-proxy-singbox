@@ -1,6 +1,12 @@
 name: Free Proxy Scan
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "freeproxy.py"
+      - "scripts/merge_scan_results.py"
+      - ".github/workflows/free-proxy-scan.yml"
   workflow_dispatch:
   schedule:
     - cron: "0 */12 * * *"
