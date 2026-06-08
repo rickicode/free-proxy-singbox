@@ -181,21 +181,10 @@ def build_config():
     net = load_net_config()
     managed = load_storage()
 
-    # Preserve existing dynamic outbounds
-    dynamic_obs = []
-    dynamic_selectors = []
-    if os.path.exists(SINGBOX_CFG):
-        try:
-            with open(SINGBOX_CFG) as f:
-                cur = json.load(f)
-            dynamic_obs = [o for o in cur["outbounds"]
-                           if o["tag"].startswith("bf-")]
-            dynamic_selectors = [o for o in cur["outbounds"]
-                                  if o["tag"].startswith("PROXY-")]
-        except: pass
-
-    proxy_tags = [o["tag"] for o in dynamic_selectors]
-    base_choices = ["DIRECT", "WARP", "WARP1", "WARP2"] + proxy_tags
+    # Dynamic outbounds (bf-*, PROXY-*) dikelola oleh trojan-updater
+    # dan proxy-collector — jangan di-preserve di base config.
+    # Nanti ditambah otomatis pas proxy-collector jalan.
+    base_choices = ["DIRECT", "WARP", "WARP1", "WARP2"]
 
     return {
         "log": {"level": "info", "output": LOG_FILE, "timestamp": True},
@@ -247,10 +236,8 @@ def build_config():
              "outbounds": ["WARP1", "WARP2"],
              "url": "http://cp.cloudflare.com/generate_204",
              "interval": "3m", "tolerance": 50},
-            *dynamic_obs,
-            *dynamic_selectors,
             {"type": "selector", "tag": "GLOBAL",
-             "outbounds": ["DIRECT", "WARP", "WARP1", "WARP2"] + proxy_tags,
+             "outbounds": ["DIRECT", "WARP", "WARP1", "WARP2"],
              "default": "DIRECT"},
             {"type": "selector", "tag": "GOOGLE",
              "outbounds": base_choices, "default": "DIRECT"},
