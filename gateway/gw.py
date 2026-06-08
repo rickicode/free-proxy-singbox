@@ -510,6 +510,22 @@ WantedBy=multi-user.target
     else:
         ok("proxy-collector.py already exists")
 
+    # Download warp-refresh.py
+    warp_py = "/opt/warp-refresh.py"
+    if not os.path.exists(warp_py):
+        warp_url = "https://raw.githubusercontent.com/rickicode/free-proxy-singbox/main/scripts/warp-refresh.py"
+        try:
+            req = urllib.request.Request(warp_url, headers={"User-Agent": "curl/8.0"})
+            data = urllib.request.urlopen(req, timeout=30).read()
+            with open(warp_py, "wb") as f:
+                f.write(data)
+            os.chmod(warp_py, 0o755)
+            ok("warp-refresh.py installed")
+        except Exception as e:
+            err(f"Download warp-refresh.py failed: {e}")
+    else:
+        ok("warp-refresh.py already exists")
+
     # Set up cron
     cron_job = "0 */5 * * * /usr/bin/python3 /opt/proxy-collector.py >> /var/log/proxy-collector.log 2>&1"
     existing = run("crontab -l 2>/dev/null", capture=True, check=False).stdout
@@ -520,6 +536,18 @@ WantedBy=multi-user.target
         run(f"crontab {tmp}", check=False)
         os.unlink(tmp)
         ok("Cron set: proxy-collector tiap 5 jam")
+    else:
+        ok("Cron already set")
+
+    # Set up warp-refresh cron (tiap 2 hari)
+    warp_cron = "0 */48 * * * /usr/bin/python3 /opt/warp-refresh.py >> /var/log/warp-refresh.log 2>&1"
+    if warp_cron not in existing:
+        with tempfile.NamedTemporaryFile("w", delete=False) as f:
+            f.write(existing + "\n" + warp_cron + "\n")
+            tmp = f.name
+        run(f"crontab {tmp}", check=False)
+        os.unlink(tmp)
+        ok("Cron set: warp-refresh tiap 2 hari")
     else:
         ok("Cron already set")
 
@@ -719,6 +747,26 @@ def cmd_net_config():
         apply_config()
 
 
+def cmd_warp_refresh():
+    """Re-register WARP1 + WARP2 accounts via warp-refresh.py."""
+    script = "/opt/warp-refresh.py"
+    if os.path.exists(script):
+        run(["python3", script] + ([sys.argv[2]] if len(sys.argv) > 2 and sys.argv[2] == "--force" else []))
+    else:
+        # Download jika belum ada
+        url = "https://raw.githubusercontent.com/rickicode/free-proxy-singbox/main/scripts/warp-refresh.py"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "curl/8.0"})
+            data = urllib.request.urlopen(req, timeout=30).read()
+            with open(script, "wb") as f:
+                f.write(data)
+            os.chmod(script, 0o755)
+            ok("warp-refresh.py downloaded")
+            run(["python3", script])
+        except Exception as e:
+            err(f"Download warp-refresh.py failed: {e}")
+
+
 # ═════════════════════════════════════════════════════════════════════════════
 #  INTERACTIVE MENU
 # ═════════════════════════════════════════════════════════════════════════════
@@ -733,6 +781,7 @@ def interactive():
   4) Mode (GLOBAL default)
   5) Update proxies (free proxies)
   6) Collector status
+  w) Warp refresh (2 hari)
   7) Network config
   8) Compile local rules
   9) Live logs
@@ -776,6 +825,8 @@ def interactive():
             cmd_update_proxies()
         elif choice == "6":
             cmd_collector_status()
+        elif choice in ("w", "W"):
+            cmd_warp_refresh()
         elif choice == "7":
             cmd_net_config()
         elif choice == "8":
@@ -800,6 +851,7 @@ CMDS = {
     "rule": cmd_rule, "mode": cmd_mode, "net-config": cmd_net_config,
     "compile": cmd_compile, "update-proxies": cmd_update_proxies,
     "collector-status": cmd_collector_status,
+    "warp-refresh": cmd_warp_refresh,
 }
 
 if __name__ == "__main__":

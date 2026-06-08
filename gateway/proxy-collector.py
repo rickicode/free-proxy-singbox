@@ -256,15 +256,16 @@ def update_config(config, free_obs):
                 cc_groups[cc] = []
             cc_groups[cc].append(ob["tag"])
 
-    # Add PROXY-FREE selector (manual pilih, tidak otomatis pindah)
+    # PROXY-FREE: urltest — auto pilih proxy tercepat dari semua negara
     if free_tags:
         config["outbounds"].append({
-            "type": "selector", "tag": "PROXY-FREE",
+            "type": "urltest", "tag": "PROXY-FREE",
             "outbounds": free_tags,
-            "default": free_tags[0],
+            "url": "http://cp.cloudflare.com/generate_204",
+            "interval": "10m", "tolerance": 100,
         })
 
-    # Add per-country selector groups
+    # Per-country: selector — user pilih manual, tidak loncat-loncat
     for cc in TARGET_GROUPS:
         tags = cc_groups.get(cc, [])
         if tags:
