@@ -1,0 +1,687 @@
+{
+  "generated_at": "2026-06-08T09:12:06Z",
+  "source_count": 3,
+  "sample_size": 250,
+  "tcp_ok_count": 106,
+  "live_count": 19,
+  "target_countries": [
+    "ID",
+    "SG",
+    "US"
+  ],
+  "binary": "/workspaces/free-proxy-singbox/bin/sing-box",
+  "groups": {
+    "PROXY-FREE": [
+      "FREE-FR-001-185.18.250.252",
+      "FREE-FR-002-141.193.213.21",
+      "FREE-FR-003-141.193.213.30",
+      "FREE-FR-004-104.16.174.12",
+      "FREE-FR-005-104.20.42.250",
+      "FREE-FR-006-104.18.152.229",
+      "FREE-FR-007-66.81.247.155",
+      "FREE-FR-008-185.18.250.245",
+      "FREE-FR-009-45.130.125.160",
+      "FREE-FR-010-188.114.97.6",
+      "FREE-FR-011-172.64.152.23",
+      "FREE-FR-012-45.130.125.69",
+      "FREE-FR-013-104.18.152.208",
+      "FREE-FR-015-216.24.57.7",
+      "FREE-FR-016-188.114.96.3",
+      "FREE-FR-017-45.130.125.96",
+      "FREE-FR-018-104.21.40.34",
+      "FREE-FR-019-45.130.125.160",
+      "FREE-NL-014-172.64.152.23"
+    ],
+    "PROXY-ID": [],
+    "PROXY-SG": [],
+    "PROXY-US": []
+  },
+  "proxies": [
+    {
+      "tag": "FREE-FR-001-185.18.250.252",
+      "name": "FR 185.18.250.252:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "185.18.250.252",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.169.252",
+      "source_name": "@v2rayngzendegimamad\ud83d\udd4a\ufe0f",
+      "source_line": "trojan://humanity@185.18.250.252:443?path=/assignment&security=tls&insecure=1&host=www.gossipglove.com&fp=chrome&type=ws&allowInsecure=1&sni=www.gossipglove.com#@v2rayngzendegimamad\ud83d\udd4a\ufe0f",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-001-185.18.250.252",
+        "server": "185.18.250.252",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.gossipglove.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.gossipglove.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-002-141.193.213.21",
+      "name": "FR 141.193.213.21:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "141.193.213.21",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "@V2raySup0 | \ud83d\ude80",
+      "source_line": "trojan://humanity@141.193.213.21:443?path=/assignment&security=tls&alpn=http/1.1&insecure=0&host=www.calmloud.com&type=ws&allowInsecure=0&sni=www.calmloud.com#@V2raySup0 | \ud83d\ude80",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-002-141.193.213.21",
+        "server": "141.193.213.21",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-003-141.193.213.30",
+      "name": "FR 141.193.213.30:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "141.193.213.30",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "\ud83d\udc51_24_@V2dogs_n",
+      "source_line": "trojan://humanity@141.193.213.30:443?path=/assignment&security=tls&alpn=http/1.1&insecure=0&host=www.calmloud.com&fp=chrome&type=ws&allowInsecure=0&sni=www.calmloud.com#\ud83d\udc51_24_@V2dogs_n",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-003-141.193.213.30",
+        "server": "141.193.213.30",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-004-104.16.174.12",
+      "name": "FR 104.16.174.12:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "104.16.174.12",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.184.26",
+      "source_name": "@FarazV2ray",
+      "source_line": "trojan://humanity@104.16.174.12:443?path=/assignment&security=tls&insecure=0&host=www.ignitelimit.com&type=ws&allowInsecure=0&sni=www.ignitelimit.com#@FarazV2ray",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-004-104.16.174.12",
+        "server": "104.16.174.12",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.ignitelimit.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.ignitelimit.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-005-104.20.42.250",
+      "name": "FR 104.20.42.250:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "104.20.42.250",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": ">>@configV2rayNG::FR",
+      "source_line": "trojan://humanity@104.20.42.250:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&insecure=0&host=www.calmloud.com&fp=ios&type=ws&allowInsecure=0&sni=www.calmloud.com#%3E%3E%40configV2rayNG%3A%3AFR",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-005-104.20.42.250",
+        "server": "104.20.42.250",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-006-104.18.152.229",
+      "name": "FR 104.18.152.229:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "104.18.152.229",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.184.26",
+      "source_name": "@meliproxyy",
+      "source_line": "trojan://humanity@104.18.152.229:443?path=/assignment&security=tls&insecure=0&host=www.ignitelimit.com&type=ws&allowInsecure=0&sni=www.ignitelimit.com#@meliproxyy",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-006-104.18.152.229",
+        "server": "104.18.152.229",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.ignitelimit.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.ignitelimit.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-007-66.81.247.155",
+      "name": "FR 66.81.247.155:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "66.81.247.155",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "\ud83d\udd2e_46_@V2dogs_n",
+      "source_line": "trojan://humanity@66.81.247.155:443?type=ws&security=tls&path=/assignment&host=www.calmloud.com&sni=www.calmloud.com&alpn=http/1.1&fp=chrome&allowInsecure=0#\ud83d\udd2e_46_@V2dogs_n",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-007-66.81.247.155",
+        "server": "66.81.247.155",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-008-185.18.250.245",
+      "name": "FR 185.18.250.245:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "185.18.250.245",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.155.154",
+      "source_name": "@VPsave",
+      "source_line": "trojan://humanity@185.18.250.245:443?path=/assignment&security=tls&insecure=1&host=www.calmlunch.com&type=ws&allowInsecure=1&sni=www.calmlunch.com#@VPsave",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-008-185.18.250.245",
+        "server": "185.18.250.245",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmlunch.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmlunch.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-009-45.130.125.160",
+      "name": "FR 45.130.125.160:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "45.130.125.160",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.155.154",
+      "source_name": "@Arvand_soul @Arvand_soul\u2764\ufe0f\ud83e\uddd1\u200d\ud83d\udcbb \u06a9\u0627\u0646\u0641\u06cc\u06af \u0645\u0644\u06cc \u062f\u0631",
+      "source_line": "trojan://humanity@45.130.125.160:443?path=/assignment&security=tls&insecure=0&host=www.calmlunch.com&type=ws&allowInsecure=0&sni=www.calmlunch.com&brand=@Arvand_soul#@Arvand_soul @Arvand_soul\u2764\ufe0f\ud83e\uddd1\u200d\ud83d\udcbb \u06a9\u0627\u0646\u0641\u06cc\u06af \u0645\u0644\u06cc \u062f\u0631",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-009-45.130.125.160",
+        "server": "45.130.125.160",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmlunch.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmlunch.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-010-188.114.97.6",
+      "name": "FR 188.114.97.6:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "188.114.97.6",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "@V2ray_official",
+      "source_line": "trojan://humanity@188.114.97.6:443?path=/assignment&security=tls&alpn=http/1.1&host=www.calmloud.com&type=ws&sni=www.calmloud.com#@V2ray_official",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-010-188.114.97.6",
+        "server": "188.114.97.6",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-011-172.64.152.23",
+      "name": "FR 172.64.152.23:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "172.64.152.23",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.155.154",
+      "source_name": "\ud83c\uddeb\ud83c\uddf7 - FR - @FreeOnlineVPN",
+      "source_line": "trojan://humanity@172.64.152.23:443?path=/assignment&security=tls&insecure=0&host=www.calmlunch.com&type=ws&allowInsecure=0&sni=www.calmlunch.com&note=@FreeOnlineVPN#\ud83c\uddeb\ud83c\uddf7 - FR - @FreeOnlineVPN",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-011-172.64.152.23",
+        "server": "172.64.152.23",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmlunch.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmlunch.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-012-45.130.125.69",
+      "name": "FR 45.130.125.69:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "45.130.125.69",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "\ud83e\udde1_45_@V2dogs_n",
+      "source_line": "trojan://humanity@45.130.125.69:443?path=/assignment&security=tls&alpn=http/1.1&insecure=1&host=www.calmloud.com&fp=chrome&type=ws&allowInsecure=1&sni=www.calmloud.com#\ud83e\udde1_45_@V2dogs_n",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-012-45.130.125.69",
+        "server": "45.130.125.69",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-013-104.18.152.208",
+      "name": "FR 104.18.152.208:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "104.18.152.208",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.184.26",
+      "source_name": "\u26a1\ufe0f_38_@V2dogs_n",
+      "source_line": "trojan://humanity@104.18.152.208:443?path=/assignment&security=tls&insecure=0&host=www.ignitelimit.com&type=ws&allowInsecure=0&sni=www.ignitelimit.com#\u26a1\ufe0f_38_@V2dogs_n",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-013-104.18.152.208",
+        "server": "104.18.152.208",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.ignitelimit.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.ignitelimit.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-015-216.24.57.7",
+      "name": "FR 216.24.57.7:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "216.24.57.7",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.184.26",
+      "source_name": ">>@oneclickvpnkeys::FR",
+      "source_line": "trojan://humanity@216.24.57.7:443?alpn=http%2F1.1&host=www.ignitelimit.com&path=%2Fassignment&sni=www.ignitelimit.com&type=ws#%3E%3E%40oneclickvpnkeys%3A%3AFR",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-015-216.24.57.7",
+        "server": "216.24.57.7",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.ignitelimit.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.ignitelimit.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-016-188.114.96.3",
+      "name": "FR 188.114.96.3:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "188.114.96.3",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.155.154",
+      "source_name": ">>@oneclickvpnkeys::FR",
+      "source_line": "trojan://humanity@188.114.96.3:443?host=www.calmlunch.com&path=%2Fassignment&sni=www.calmlunch.com&type=ws#%3E%3E%40oneclickvpnkeys%3A%3AFR",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-016-188.114.96.3",
+        "server": "188.114.96.3",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmlunch.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmlunch.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-017-45.130.125.96",
+      "name": "FR 45.130.125.96:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "45.130.125.96",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": "\ud83d\udea0_44_@V2dogs_n",
+      "source_line": "trojan://humanity@45.130.125.96:443?path=/assignment&security=tls&alpn=http/1.1&insecure=0&host=www.calmloud.com&fp=chrome&type=ws&allowInsecure=0&sni=www.calmloud.com&brand=@Arvand_soul#\ud83d\udea0_44_@V2dogs_n",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-017-45.130.125.96",
+        "server": "45.130.125.96",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-018-104.21.40.34",
+      "name": "FR 104.21.40.34:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "104.21.40.34",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.159.169.252",
+      "source_name": ">>@FreakConfig::FR",
+      "source_line": "trojan://humanity@104.21.40.34:443?path=%2Fassignment&security=tls&insecure=1&host=www.gossipglove.com&type=ws&allowInsecure=1&sni=www.gossipglove.com#%3E%3E%40FreakConfig%3A%3AFR",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-018-104.21.40.34",
+        "server": "104.21.40.34",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.gossipglove.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.gossipglove.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-FR-019-45.130.125.160",
+      "name": "FR 45.130.125.160:443",
+      "country_code": "FR",
+      "country": "France",
+      "region": "\u00cele-de-France",
+      "city": "Paris",
+      "isp": "SCALEWAY",
+      "server": "45.130.125.160",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.15.244.97",
+      "source_name": ">>@configV2rayNG::FR",
+      "source_line": "trojan://humanity@45.130.125.160:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&insecure=0&host=www.calmloud.com&fp=chrome&type=ws&allowInsecure=0&sni=www.calmloud.com#%3E%3E%40configV2rayNG%3A%3AFR",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-FR-019-45.130.125.160",
+        "server": "45.130.125.160",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.calmloud.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.calmloud.com"
+          }
+        }
+      }
+    },
+    {
+      "tag": "FREE-NL-014-172.64.152.23",
+      "name": "NL 172.64.152.23:443",
+      "country_code": "NL",
+      "country": "Netherlands",
+      "region": "North Holland",
+      "city": "Haarlem",
+      "isp": "Scaleway SAS",
+      "server": "172.64.152.23",
+      "server_port": 443,
+      "transport": "ws",
+      "external_ip": "51.158.241.106",
+      "source_name": "\ud83c\uddf3\ud83c\uddf1 t.me/Natrixo AA",
+      "source_line": "trojan://humanity@172.64.152.23:443?Telegram=@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad,@GozargahAzad&encryption=none&security=tls&sni=www.multiplydose.com&fp=chrome&insecure=1&type=ws&host=www.multiplydose.com&path=/assignment#\ud83c\uddf3\ud83c\uddf1 t.me/Natrixo AA",
+      "outbound": {
+        "type": "trojan",
+        "tag": "FREE-NL-014-172.64.152.23",
+        "server": "172.64.152.23",
+        "server_port": 443,
+        "password": "humanity",
+        "tls": {
+          "enabled": true,
+          "insecure": true,
+          "server_name": "www.multiplydose.com"
+        },
+        "transport": {
+          "type": "ws",
+          "path": "/assignment",
+          "headers": {
+            "Host": "www.multiplydose.com"
+          }
+        }
+      }
+    }
+  ]
+}

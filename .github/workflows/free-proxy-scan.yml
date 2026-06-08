@@ -1,0 +1,89 @@
+name: Free Proxy Scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */12 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard_index: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Prepare sing-box
+        run: ./get-singbox.sh
+
+      - name: Run shard scan
+        run: |
+          mkdir -p shard-output
+          python3 freeproxy.py scan \
+            --tcp-workers 128 \
+            --live-workers 16 \
+            --shard-index "${{ matrix.shard_index }}" \
+            --shard-count 4 \
+            --output "shard-output/shard-${{ matrix.shard_index }}.json"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shard-${{ matrix.shard_index }}
+          path: shard-output/shard-${{ matrix.shard_index }}.json
+
+  merge-and-commit:
+    runs-on: ubuntu-latest
+    needs: scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: shard-downloads
+
+      - name: Merge shard results
+        run: |
+          mkdir -p output merged-input
+          find shard-downloads -type f -name '*.json' -exec cp {} merged-input/ \;
+          python3 scripts/merge_scan_results.py \
+            --input-dir merged-input \
+            --output output/live-proxies.json
+
+      - name: Write latest summary
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("output/live-proxies.json").read_text())
+          summary = {
+              "generated_at": data.get("generated_at"),
+              "candidate_count": data.get("candidate_count"),
+              "tcp_ok_count": data.get("tcp_ok_count"),
+              "live_count": data.get("live_count"),
+              "groups": {k: len(v) for k, v in data.get("groups", {}).items()},
+          }
+          Path("output/latest-summary.json").write_text(json.dumps(summary, indent=2))
+          Path("output/live-proxies.singbox.json").write_text(json.dumps(data.get("singbox", {}), indent=2))
+          PY
+
+      - name: Commit updated scan results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/live-proxies.json output/latest-summary.json output/live-proxies.singbox.json
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: update live proxy scan"
+          git push
