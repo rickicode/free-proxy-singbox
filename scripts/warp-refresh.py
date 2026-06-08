@@ -27,6 +27,27 @@ def run(cmd, **kw):
     return subprocess.run(cmd, capture_output=True, text=True, **kw)
 
 
+def ensure_wgcf():
+    """Download wgcf binary if not found."""
+    if os.path.exists(WGCF):
+        return
+    info("Downloading wgcf...")
+    arch = run(["uname", "-m"]).stdout.strip()
+    a = {"x86_64": "amd64", "aarch64": "arm64"}.get(arch, "amd64")
+    url = f"https://github.com/ViRb3/wgcf/releases/latest/download/wgcf_{a}"
+    try:
+        import urllib.request
+        req = urllib.request.Request(url, headers={"User-Agent": "curl/8.0"})
+        data = urllib.request.urlopen(req, timeout=30).read()
+        with open(WGCF, "wb") as f:
+            f.write(data)
+        os.chmod(WGCF, 0o755)
+        ok(f"wgcf installed: {WGCF}")
+    except Exception as e:
+        fail(f"Download wgcf failed: {e}")
+        sys.exit(1)
+
+
 def register_via_wgcf():
     """Daftar WARP baru via wgcf. Return (privkey, addr_v4, addr_v6, client_id)."""
     work = tempfile.mkdtemp(prefix="warp-")
@@ -149,10 +170,24 @@ def refresh_warp(label, ep_tag):
     return True
 
 
+def ensure_deps():
+    """Install dependencies: wireguard-tools (wg) + wgcf binary."""
+    # wireguard-tools for wg genkey/wg pubkey
+    r = run(["which", "wg"])
+    if r.returncode != 0:
+        info("Installing wireguard-tools...")
+        run(["apt-get", "install", "-y", "-qq", "wireguard-tools"])
+        ok("wireguard-tools installed")
+    # wgcf binary
+    ensure_wgcf()
+
+
 def main():
     force = "--force" in sys.argv
     print(f"\n  \033[1mWARP Refresh\033[0m")
     print(f"  {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime())}")
+
+    ensure_deps()
 
     # Freshness check
     creds = load_creds()
