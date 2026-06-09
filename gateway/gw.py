@@ -326,6 +326,10 @@ def build_config():
             "rules": [
                 {"action": "sniff"},
                 {"protocol": "dns", "action": "hijack-dns"},
+                # Tailscale/control-plane/CGNAT must never go through WARP or proxies.
+                {"domain_suffix": ["tailscale.com", "tailscale.io", "ts.net"], "outbound": "DIRECT"},
+                {"ip_cidr": ["100.64.0.0/10"], "outbound": "DIRECT"},
+                {"network": "udp", "port": 41641, "outbound": "DIRECT"},
                 {"ip_is_private": True, "outbound": "DIRECT"},
                 {"inbound": ["mixed-1010"], "outbound": "PORT-1010"},
                 {"inbound": ["mixed-1011"], "outbound": "PORT-1011"},

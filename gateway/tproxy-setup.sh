@@ -30,6 +30,7 @@ iptables -t mangle -A SING_BOX -d 127.0.0.0/8 -j RETURN
 iptables -t mangle -A SING_BOX -d 192.168.0.0/16 -j RETURN
 iptables -t mangle -A SING_BOX -d 10.0.0.0/8 -j RETURN
 iptables -t mangle -A SING_BOX -d 172.16.0.0/12 -j RETURN
+iptables -t mangle -A SING_BOX -d 100.64.0.0/10 -j RETURN
 iptables -t mangle -A SING_BOX -p tcp -j TPROXY --tproxy-mark $TPROXY_MARK --on-port $TPROXY_PORT
 iptables -t mangle -A SING_BOX -p udp -j TPROXY --tproxy-mark $TPROXY_MARK --on-port $TPROXY_PORT
 iptables -t mangle -A PREROUTING -i $LAN_IF -j SING_BOX
